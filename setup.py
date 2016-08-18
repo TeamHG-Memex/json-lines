@@ -14,7 +14,8 @@ setup(
     url = 'https://github.com/TeamHG-Memex/json-lines',
     packages = ['json_lines'],
     long_description=read('README.rst'),
-    install_requires = [
+    install_requires=[
+        'six',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

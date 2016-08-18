@@ -29,7 +29,7 @@ Usage
 -----
 
 In order to read a well-formed json lined file,
-pass a path or an open file as the first argument::
+pass a path or an open (in binary mode) file as the first argument::
 
     import json_lines
 
@@ -49,9 +49,10 @@ silently stopping on the first error (only logging a warning)::
 If you pass a file path as the first argument, the file is closed only if
 all items are read.
 
-You can pass an open file as the first argument too::
+You can pass an open file (it must be opened in binary mode)
+as the first argument too::
 
-    with gzip.open('file.jl.gz') as f:
+    with gzip.open('file.jl.gz', 'rb') as f:
         for item in json_lines.reader(f):
             break
 
