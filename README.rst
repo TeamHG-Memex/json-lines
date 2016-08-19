@@ -29,32 +29,31 @@ Usage
 -----
 
 In order to read a well-formed json lined file,
-pass a path or an open (in binary mode) file as the first argument::
+pass an open file as the first argument. The file can be opened
+in text or binary mode, but it it's opened in text mode, the encoding
+must be set correctly::
 
     import json_lines
 
-    for item in json_lines.reader('file.jl'):
-        print(item['x'])
+    with open('file.jl', 'rb') as f:
+        for item in json_lines.reader(f):
+            print(item['x'])
 
-Reading files in gzip format (".gz" and ".gzip" extensions recognized)::
+There is also a helper function ``json_lines.open_file`` that recognizes
+".gz" and ".gzip" extensions and opens them with ``gzip``::
+Reading files in gzip format ( extensions recognized)::
 
-    json_lines.reader('file.jl.gz')
+    with json_lines.open_file('file.jl.gz') as f:
+        for item in json_lines.reader(f):
+            print(item['x'])
 
 Handling broken (cut at some point) files: read while it's possible
 to decode the compressed stream and parse json,
 silently stopping on the first error (only logging a warning)::
 
-    json_lines.reader('file.jl.gz', broken=True)
-
-If you pass a file path as the first argument, the file is closed only if
-all items are read.
-
-You can pass an open file (it must be opened in binary mode)
-as the first argument too::
-
-    with gzip.open('file.jl.gz', 'rb') as f:
-        for item in json_lines.reader(f):
-            break
+    with json_lines.open_file('file.jl.gz') as f:
+        for item in json_lines.reader(f, broken=True):
+            print(item['x'])
 
 
 License

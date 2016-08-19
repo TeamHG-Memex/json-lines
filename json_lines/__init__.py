@@ -1,1 +1,1 @@
-from ._lib import reader
+from ._lib import reader, open_file

@@ -14,7 +14,8 @@ def test_reader_path():
         data = [{'a': 1}, {'b': 2}]
         f.write(jl_bytes(data))
         f.close()
-        assert list(json_lines.reader(f.name)) == data
+        with json_lines.open_file(f.name) as f_:
+            assert list(json_lines.reader(f_)) == data
 
 
 def test_reader_file():
@@ -42,7 +43,8 @@ def test_reader_gzip_path():
         data = [{'a': 1}, {'b': 2}]
         with gzip.open(f.name, 'wb') as gzip_f:
             gzip_f.write(jl_bytes(data))
-        assert list(json_lines.reader(f.name)) == data
+        with json_lines.open_file(f.name) as f_:
+            assert list(json_lines.reader(f_)) == data
 
 
 def test_reader_broken():
@@ -55,8 +57,9 @@ def test_reader_broken():
             contents = f_.read()
         with open(f.name, 'wb') as f_:
             f_.write(contents[:-10])
-        read_data = list(json_lines.reader(f.name, broken=True))
-        assert read_data[:900] == data * 900
+        with json_lines.open_file(f.name) as f_:
+            read_data = list(json_lines.reader(f_, broken=True))
+            assert read_data[:900] == data * 900
 
 
 def test_reader_broken_fuzz():
@@ -70,5 +73,6 @@ def test_reader_broken_fuzz():
         for cut in range(1, min(1000, len(contents))):
             with open(f.name, 'wb') as f_:
                 f_.write(contents[:-cut])
-            read_data = list(json_lines.reader(f.name, broken=True))
-            assert isinstance(read_data, list)
+            with json_lines.open_file(f.name) as f_:
+                read_data = list(json_lines.reader(f_, broken=True))
+                assert isinstance(read_data, list)
