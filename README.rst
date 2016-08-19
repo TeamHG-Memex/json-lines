@@ -29,8 +29,9 @@ Usage
 -----
 
 In order to read a well-formed json lined file,
-pass an open file as the first argument. The file can be opened
-in text or binary mode, but it it's opened in text mode, the encoding
+pass an open file as the first argument to ``json_lines.reader``.
+The file can be opened
+in text or binary mode, but if it's opened in text mode, the encoding
 must be set correctly::
 
     import json_lines
@@ -41,13 +42,13 @@ must be set correctly::
 
 There is also a helper function ``json_lines.open_file`` that recognizes
 ".gz" and ".gzip" extensions and opens them with ``gzip``::
-Reading files in gzip format ( extensions recognized)::
 
     with json_lines.open_file('file.jl.gz') as f:
         for item in json_lines.reader(f):
             print(item['x'])
 
-Handling broken (cut at some point) files: read while it's possible
+Handling broken (cut at some point) files is enabled by passing ``broken=True``
+to ``json_lines.reader``. They are read while it's possible
 to decode the compressed stream and parse json,
 silently stopping on the first error (only logging a warning)::
 
