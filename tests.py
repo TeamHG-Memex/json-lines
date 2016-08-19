@@ -2,6 +2,8 @@ import gzip
 import json
 import tempfile
 
+import pytest
+
 import json_lines
 
 
@@ -47,6 +49,26 @@ def test_reader_gzip_path():
             assert list(json_lines.reader(f_)) == data
 
 
+def test_reader_broken_fail():
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jl.gz') as f:
+        f.close()
+        with open(f.name, 'wb') as f_:
+            f_.write(b'somedata')
+        with json_lines.open_file(f.name) as f_:
+            with pytest.raises(Exception):
+                _ = list(json_lines.reader(f_))
+
+
+def test_reader_broken_json_fail():
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jl.gz') as f:
+        f.close()
+        with gzip.open(f.name, 'wb') as gzip_f:
+            gzip_f.write(b'{"a": 1}\n{[]')
+        with json_lines.open_file(f.name) as f_:
+            with pytest.raises(Exception):
+                _ = list(json_lines.reader(f_))
+
+
 def test_reader_broken():
     with tempfile.NamedTemporaryFile(delete=False, suffix='.jl.gz') as f:
         f.close()
@@ -60,6 +82,16 @@ def test_reader_broken():
         with json_lines.open_file(f.name) as f_:
             read_data = list(json_lines.reader(f_, broken=True))
             assert read_data[:900] == data * 900
+
+
+def test_reader_broken_json():
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jl.gz') as f:
+        f.close()
+        with gzip.open(f.name, 'wb') as gzip_f:
+            gzip_f.write(b'{"a": 1}\n{[]')
+        with json_lines.open_file(f.name) as f_:
+            read_data = list(json_lines.reader(f_, broken=True))
+            assert read_data == [{'a': 1}]
 
 
 def test_reader_broken_fuzz():
