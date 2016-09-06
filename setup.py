@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name = 'json-lines',
-    version = '0.1.1',
+    version = '0.2.0',
     description = 'Reading JSON lines (jl) files',
     license = 'MIT',
     url = 'https://github.com/TeamHG-Memex/json-lines',

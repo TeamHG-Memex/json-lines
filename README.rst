@@ -40,20 +40,20 @@ must be set correctly::
         for item in json_lines.reader(f):
             print(item['x'])
 
-There is also a helper function ``json_lines.open_file`` that recognizes
+There is also a helper function ``json_lines.open`` that recognizes
 ".gz" and ".gzip" extensions and opens them with ``gzip``::
 
-    with json_lines.open_file('file.jl.gz') as f:
-        for item in json_lines.reader(f):
+    with json_lines.open('file.jl.gz') as f:
+        for item in f:
             print(item['x'])
 
 Handling broken (cut at some point) files is enabled by passing ``broken=True``
-to ``json_lines.reader``. They are read while it's possible
-to decode the compressed stream and parse json,
+to ``json_lines.reader`` or ``json_lines.open``.
+They are read while it's possible to decode the compressed stream and parse json,
 silently stopping on the first error (only logging a warning)::
 
-    with json_lines.open_file('file.jl.gz') as f:
-        for item in json_lines.reader(f, broken=True):
+    with json_lines.open('file.jl.gz', broken=True) as f:
+        for item in f:
             print(item['x'])
 
 

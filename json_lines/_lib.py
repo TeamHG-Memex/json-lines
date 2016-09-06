@@ -1,8 +1,21 @@
+from contextlib import contextmanager
 import gzip
 import json
 import logging
 
 import six
+
+
+__all__ = ['open_file', 'reader', 'open']
+
+
+builtin_open = open
+
+
+@contextmanager
+def open(path, broken=False):
+    with open_file(path) as f:
+        yield reader(f, broken=broken)
 
 
 def open_file(path, *args, **kwargs):
@@ -12,7 +25,7 @@ def open_file(path, *args, **kwargs):
     if path.endswith('.gz') or path.endswith('.gzip'):
         _open = gzip.open
     else:
-        _open = open
+        _open = builtin_open
     return _open(path, *args, **kwargs)
 
 
