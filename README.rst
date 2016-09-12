@@ -36,6 +36,9 @@ Installation
 
     pip install json-lines
 
+If `ujson <https://pypi.python.org/pypi/ujson>`_ is installed, it is used
+to speed up json decoding (which is the main bottleneck even for gzipped files).
+
 
 Usage
 -----
