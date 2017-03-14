@@ -1,5 +1,4 @@
 language: python
-sudo: true
 branches:
     only:
         - master
