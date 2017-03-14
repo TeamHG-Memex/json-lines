@@ -1,6 +1,18 @@
 json-lines
 ==========
 
+.. image:: https://img.shields.io/pypi/v/json-lines.svg
+   :target: https://pypi.python.org/pypi/json-lines
+   :alt: PyPI Version
+
+.. image:: https://travis-ci.org/TeamHG-Memex/json-lines.svg?branch=master
+   :target: http://travis-ci.org/TeamHG-Memex/json-lines
+   :alt: Build Status
+
+.. image:: http://codecov.io/github/TeamHG-Memex/json-lines/coverage.svg?branch=master
+   :target: http://codecov.io/github/TeamHG-Memex/json-lines?branch=master
+   :alt: Code Coverage
+
 This is a tiny library for reading JSON lines (.jl) files,
 including gzipped and broken files.
 
