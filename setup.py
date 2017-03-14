@@ -7,12 +7,12 @@ def read(fname):
 
 
 setup(
-    name = 'json-lines',
-    version = '0.2.0',
-    description = 'Reading JSON lines (jl) files',
-    license = 'MIT',
-    url = 'https://github.com/TeamHG-Memex/json-lines',
-    packages = ['json_lines'],
+    name='json-lines',
+    version='0.2.0',
+    description='Reading JSON lines (jl) files',
+    license='MIT',
+    url='https://github.com/TeamHG-Memex/json-lines',
+    packages=['json_lines'],
     long_description=read('README.rst'),
     install_requires=[
         'six',
@@ -24,8 +24,8 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )
