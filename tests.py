@@ -18,7 +18,7 @@ def write_jl_gz(path, data, mode='wb'):
 def test_reader_path(tmpdir):
     data = [{'a': 1}, {'b': 2}]
     p = tmpdir.join('myfile.jl')
-    p.write(jl_bytes(data))
+    p.write_binary(jl_bytes(data))
 
     with json_lines.open_file(str(p)) as f:
         assert list(json_lines.reader(f)) == data
@@ -27,7 +27,7 @@ def test_reader_path(tmpdir):
 def test_reader_file(tmpdir):
     data = [{'a': 1}, {'b': 2}]
     p = tmpdir.join('myfile.jl')
-    p.write(jl_bytes(data))
+    p.write_binary(jl_bytes(data))
 
     with open(str(p), 'rb') as f:
         assert list(json_lines.reader(f)) == data
@@ -53,7 +53,7 @@ def test_reader_gzip_path(tmpdir):
 
 def test_reader_broken_fail(tmpdir):
     p = tmpdir.join('myfile.jl.gz')
-    p.write(b'somedata')
+    p.write('somedata')
 
     with json_lines.open_file(str(p)) as f_:
         with pytest.raises(Exception):
@@ -74,10 +74,7 @@ def test_reader_broken(tmpdir):
     p = tmpdir.join('myfile.jl.gz')
     data = [{'a': 1}]
     write_jl_gz(p, data * 1000)
-    with open(str(p), 'rb') as f_:
-        contents = f_.read()
-    with open(str(p), 'wb') as f_:
-        f_.write(contents[:-10])
+    p.write_binary(p.read_binary()[:-10])
 
     with json_lines.open_file(str(p)) as f_:
         read_data = list(json_lines.reader(f_, broken=True))
@@ -98,12 +95,10 @@ def test_reader_broken_fuzz(tmpdir):
     p = tmpdir.join('myfile.jl.gz')
     data = [{'a': 1}]
     write_jl_gz(p, data * 1000)
+    contents = p.read_binary()
 
-    with open(str(p), 'rb') as f_:
-        contents = f_.read()
     for cut in range(1, min(1000, len(contents))):
-        with open(str(p), 'wb') as f_:
-            f_.write(contents[:-cut])
+        p.write_binary(contents[:-cut])
         with json_lines.open_file(str(p)) as f_:
             read_data = list(json_lines.reader(f_, broken=True))
             assert isinstance(read_data, list)
