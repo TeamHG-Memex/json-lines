@@ -1,6 +1,5 @@
 import gzip
 import json
-import tempfile
 
 import pytest
 
@@ -9,6 +8,11 @@ import json_lines
 
 def jl_bytes(data):
     return '\n'.join(json.dumps(x) for x in data).encode('utf8')
+
+
+def write_jl_gz(path, data, mode='wb'):
+    with gzip.open(str(path), mode) as f:
+        f.write(jl_bytes(data))
 
 
 def test_reader_path(tmpdir):
@@ -32,8 +36,7 @@ def test_reader_file(tmpdir):
 def test_reader_gzip_file(tmpdir):
     data = [{'a': 1}, {'b': 2}]
     p = tmpdir.join('myfile.jl')
-    with gzip.open(str(p), 'wb') as gzip_f:
-        gzip_f.write(jl_bytes(data))
+    write_jl_gz(p, data)
 
     with gzip.open(str(p), 'rb') as f:
         assert list(json_lines.reader(f)) == data
@@ -42,8 +45,7 @@ def test_reader_gzip_file(tmpdir):
 def test_reader_gzip_path(tmpdir):
     data = [{'a': 1}, {'b': 2}]
     p = tmpdir.join('myfile.jl.gz')
-    with gzip.open(str(p), 'wb') as gzip_f:
-        gzip_f.write(jl_bytes(data))
+    write_jl_gz(p, data)
 
     with json_lines.open_file(str(p)) as f_:
         assert list(json_lines.reader(f_)) == data
@@ -71,8 +73,7 @@ def test_reader_broken_json_fail(tmpdir):
 def test_reader_broken(tmpdir):
     p = tmpdir.join('myfile.jl.gz')
     data = [{'a': 1}]
-    with gzip.open(str(p), 'wb') as gzip_f:
-        gzip_f.write(jl_bytes(data * 1000))
+    write_jl_gz(p, data * 1000)
     with open(str(p), 'rb') as f_:
         contents = f_.read()
     with open(str(p), 'wb') as f_:
@@ -96,8 +97,7 @@ def test_reader_broken_json(tmpdir):
 def test_reader_broken_fuzz(tmpdir):
     p = tmpdir.join('myfile.jl.gz')
     data = [{'a': 1}]
-    with gzip.open(str(p), 'wb') as gzip_f:
-        gzip_f.write(jl_bytes(data * 1000))
+    write_jl_gz(p, data * 1000)
 
     with open(str(p), 'rb') as f_:
         contents = f_.read()
