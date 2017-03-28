@@ -24,11 +24,11 @@ Why?
 ----
 
 Reading a well-formed JSON lines file is a one-liner in Python.
-But if the file can be broken (this happens when the process writing
-it is killed), handling all exceptions takes 10x more code, especially
-when the file is compressed. If file is concatenated from multiple
-broken archives (some process was writing to the same file multiple times),
-things get even more complicated.
+But the file can be broken: cut at some point
+(this happens when the process writing it is killed),
+or concatenated from several cut pieces
+(this happend when the process started appending to the same file again).
+Handling all this cases is not easy, especially if the file is compressed.
 
 json-lines handles all this cases for you!
 
@@ -69,10 +69,9 @@ There is also a helper function ``json_lines.open`` that recognizes
 
 Handling broken (cut at some point) files is enabled by passing ``broken=True``
 to ``json_lines.reader`` or ``json_lines.open``.
-They are read while it's possible to decode the compressed stream and parse json,
-silently stopping on the first json parse error (only logging a warning).
-Multiple concatenated broken archives are also supported, the reader will try
-to skip to the next valid gzip start::
+Broken lines are skipped (only logging a warning), and reading continues
+from the next valid position.
+This works both for compressed and uncompressed files::
 
     with json_lines.open('file.jl.gz', broken=True) as f:
         for item in f:
