@@ -3,6 +3,18 @@ Release notes
 
 .. contents::
 
+0.4.0 (2018.10.24)
+------------------
+
+- Backwards incompatible: ``json_lines.open_file`` is made private and
+  renamed to ``json_lines.lib._maybe_gzip_open``;
+- ``json_lines.open`` now supports pathlib.Path objects;
+- docstrings are added to more functions;
+- logging now uses "json_lines" logger;
+- logging no longer uses string formatting;
+- Python 3.7 support.
+
+
 0.3.1 (2017.03.28)
 ------------------
 
