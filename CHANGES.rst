@@ -7,7 +7,7 @@ Release notes
 ------------------
 
 - Backwards incompatible: ``json_lines.open_file`` is made private and
-  renamed to ``json_lines.lib._maybe_gzip_open``;
+  renamed to ``json_lines._lib._maybe_gzip_open``;
 - ``json_lines.open`` now supports pathlib.Path objects;
 - docstrings are added to more functions;
 - logging now uses "json_lines" logger;
