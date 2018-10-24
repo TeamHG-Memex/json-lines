@@ -29,6 +29,7 @@ def open_file(path, *args, **kwargs):
     """
     Open file with either open or gzip.open, depending on file extension.
     """
+    path = _path_to_str(path)
     if path.endswith('.gz') or path.endswith('.gzip'):
         _open = gzip.open
     else:
@@ -117,3 +118,15 @@ class _JlRecoveringReader(object):
     def _mark_good(self, file, buffered):
         self.last_good_position = get_known_read_position(file.fileobj,
                                                           buffered)
+
+
+def _path_to_str(path):
+    """ Convert pathlib.Path objects to str; return other objects as-is. """
+    try:
+        from pathlib import Path as _Path
+    except ImportError:  # Python < 3.4
+        class _Path:
+            pass
+    if isinstance(path, _Path):
+        return str(path)
+    return path
