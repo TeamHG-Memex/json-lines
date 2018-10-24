@@ -16,6 +16,7 @@ __all__ = ['open_file', 'reader', 'open']
 
 
 builtin_open = open
+logger = logging.getLogger("json_lines")
 
 
 @contextmanager
@@ -69,12 +70,12 @@ def _iter_json_lines_recovering(file):
                 yield line
             return
         except Exception as e:
-            logging.warning("Error found, trying to recover from %r" % e)
+            logger.warning("Error found, trying to recover from %r", e)
             if not jl_reader.try_gzip_recovering():
                 logging.warning("Can't recover.")
                 return
-            logging.warning('Recovery successful, starting again from %s' %
-                            jl_reader.last_good_position)
+            logger.warning('Recovery successful, starting again from %s',
+                           jl_reader.last_good_position)
 
 
 class _JlRecoveringReader(object):
@@ -91,7 +92,7 @@ class _JlRecoveringReader(object):
             except Exception as e:
                 if not self.recover_jl:
                     raise
-                logging.warning("Error: JSON line can't be decoded. %r" % e)
+                logger.warning("Error: JSON line can't be decoded. %r", e)
             else:
                 if self.recover_gzip:
                     self._mark_good(self.file, buffered=True)
@@ -100,12 +101,11 @@ class _JlRecoveringReader(object):
         if not self.recover_gzip:
             return False
 
-        logging.debug(
-            "Position: %s current, %s certainly handled, %s last good" % (
-                self.file.fileobj.tell(),
-                get_known_read_position(self.file.fileobj),
-                self.last_good_position,
-            )
+        logger.debug(
+            "Position: %s current, %s certainly handled, %s last good",
+            self.file.fileobj.tell(),
+            get_known_read_position(self.file.fileobj),
+            self.last_good_position,
         )
         self.file = recover(self.file,
                             last_good_position=self.last_good_position)
