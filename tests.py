@@ -139,3 +139,19 @@ def test_reader_broken_fuzz(tmpdir):
         with json_lines.open_file(str(p)) as f_:
             read_data = list(json_lines.reader(f_, broken=True))
             assert isinstance(read_data, list)
+
+
+def test_pathlib_open(tmpdir):
+    pathlib = pytest.importorskip("pathlib")
+    data = [{'a': 1}, {'b': 2}]
+    p = tmpdir.join('myfile.jl')
+    p.write_binary(jl_bytes(data))
+
+    with json_lines.open(pathlib.Path(str(p))) as lines:
+        assert list(lines) == data
+
+
+def test_open_wrong_type():
+    with pytest.raises(Exception):
+        with json_lines.open(123) as lines:
+            pass
