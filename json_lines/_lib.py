@@ -21,6 +21,15 @@ logger = logging.getLogger("json_lines")
 
 @contextmanager
 def open(path, broken=False):
+    """
+    Context manager for opening and reading json lines files.
+    If file extension suggests gzip (.gz or .gzip), file is
+    decompressed on fly.
+
+    Pass broken=True if you expect the file can be truncated
+    or broken otherwise; reader will try to recover as much data
+    as possible in this case.
+    """
     with open_file(path) as f:
         yield reader(f, broken=broken)
 
@@ -28,6 +37,9 @@ def open(path, broken=False):
 def open_file(path, *args, **kwargs):
     """
     Open file with either open or gzip.open, depending on file extension.
+
+    This function doesn't handle json lines format, just opens a file
+    in a way it is decoded transparently if needed.
     """
     path = _path_to_str(path)
     if path.endswith('.gz') or path.endswith('.gzip'):
