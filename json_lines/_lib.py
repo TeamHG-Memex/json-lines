@@ -12,7 +12,7 @@ import six
 from ._gzip import recover, get_known_read_position
 
 
-__all__ = ['open_file', 'reader', 'open']
+__all__ = ['open', 'reader']
 
 
 builtin_open = open
@@ -21,20 +21,17 @@ logger = logging.getLogger("json_lines")
 
 @contextmanager
 def open(path, broken=False):
-    with open_file(path) as f:
+    """
+    Context manager for opening and reading json lines files.
+    If file extension suggests gzip (.gz or .gzip), file is
+    decompressed on fly.
+
+    Pass broken=True if you expect the file can be truncated
+    or broken otherwise; reader will try to recover as much data
+    as possible in this case.
+    """
+    with _maybe_gzip_open(path) as f:
         yield reader(f, broken=broken)
-
-
-def open_file(path, *args, **kwargs):
-    """
-    Open file with either open or gzip.open, depending on file extension.
-    """
-    path = _path_to_str(path)
-    if path.endswith('.gz') or path.endswith('.gzip'):
-        _open = gzip.open
-    else:
-        _open = builtin_open
-    return _open(path, *args, **kwargs)
 
 
 def reader(file, broken=False):
@@ -48,6 +45,21 @@ def reader(file, broken=False):
         return _iter_json_lines(file)
     else:
         return _iter_json_lines_recovering(file)
+
+
+def _maybe_gzip_open(path, *args, **kwargs):
+    """
+    Open file with either open or gzip.open, depending on file extension.
+
+    This function doesn't handle json lines format, just opens a file
+    in a way it is decoded transparently if needed.
+    """
+    path = _path_to_str(path)
+    if path.endswith('.gz') or path.endswith('.gzip'):
+        _open = gzip.open
+    else:
+        _open = builtin_open
+    return _open(path, *args, **kwargs)
 
 
 def _iter_json_lines(file):
