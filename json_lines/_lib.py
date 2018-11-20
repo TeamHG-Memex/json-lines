@@ -30,7 +30,7 @@ def open(path, broken=False):
     or broken otherwise; reader will try to recover as much data
     as possible in this case.
     """
-    with _maybe_gzip_open(path) as f:
+    with maybe_gzip_open(path) as f:
         yield reader(f, broken=broken)
 
 
@@ -47,14 +47,14 @@ def reader(file, broken=False):
         return _iter_json_lines_recovering(file)
 
 
-def _maybe_gzip_open(path, *args, **kwargs):
+def maybe_gzip_open(path, *args, **kwargs):
     """
     Open file with either open or gzip.open, depending on file extension.
 
     This function doesn't handle json lines format, just opens a file
     in a way it is decoded transparently if needed.
     """
-    path = _path_to_str(path)
+    path = path_to_str(path)
     if path.endswith('.gz') or path.endswith('.gzip'):
         _open = gzip.open
     else:
@@ -132,7 +132,7 @@ class _JlRecoveringReader(object):
                                                           buffered)
 
 
-def _path_to_str(path):
+def path_to_str(path):
     """ Convert pathlib.Path objects to str; return other objects as-is. """
     try:
         from pathlib import Path as _Path
