@@ -3,6 +3,17 @@ Release notes
 
 .. contents::
 
+0.5.0 (2018.11.21)
+------------------
+
+This release has no new features or changes in the user-facing API;
+two internal functions are moved:
+
+- ``json_lines._lib._maybe_gzip_open`` is renamed to
+  ``json_lines.utils.maybe_gzip_open``;
+- ``json_lines._lib._path_to_str`` is renamed to
+  ``json_lines.utils.path_to_str``.
+
 0.4.0 (2018.10.24)
 ------------------
 
