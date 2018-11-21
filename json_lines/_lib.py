@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 from contextlib import contextmanager
-
-
 try:
     import ujson as json
 except ImportError:
