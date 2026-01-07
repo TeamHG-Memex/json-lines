@@ -1,0 +1,7 @@
+./setup.py
+./json_lines/utils.py
+./json_lines/_lib.py
+./json_lines/__init__.py
+./json_lines/_gzip.py
+./AGENTS.md
+./tests.py
